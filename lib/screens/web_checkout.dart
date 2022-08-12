@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:outlook/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
@@ -18,7 +19,7 @@ import 'package:webview_flutter_platform_interface/webview_flutter_platform_inte
 
 class WebViewExample extends StatefulWidget {
   String? selectedTime;
-  var date, instanceUser, docName, userName,contact,address, docid,amount;
+  var date, instanceUser, docName, userName,contact,address, docid,patientid,amount,status;
   WebViewExample(
       {Key? key,
       this.selectedTime,
@@ -29,6 +30,8 @@ class WebViewExample extends StatefulWidget {
         this.contact,
         this.address,
       this.docid,
+        this.patientid,
+        this.status,
       this.amount
       })
       : super(key: key);
@@ -49,15 +52,17 @@ class WebViewExampleState extends State<WebViewExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Flutter WebView example'),
-      //   actions: <Widget>[
-      //     _SampleMenu(_controller.future),
-      //   ],
-      // ),
-      //illmobile.tk/str
+      appBar: AppBar(
+        backgroundColor: kPrimaryColor,
+        title: const Text('Appointment Booking'),
+        // actions: <Widget>[
+        //   IconButton(onPressed: (){
+        //     Navigator.pop(context);
+        //   }, icon: Icon(Icons.arrow_back))
+        // ],
+      ),
       body: WebView(
-          initialUrl: 'http://localhost/str/index.php?userName=${widget.userName}&contact=${widget.contact}&address=${widget.address}&docName=${widget.docName}&date=${widget.date}&datetime=${widget.selectedTime}&price=${widget.amount}',
+          initialUrl: 'http://localhost/str/index.php?userName=${widget.userName}&contact=${widget.contact}&address=${widget.address}&docName=${widget.docName}&date=${widget.date}&datetime=${widget.selectedTime}&price=${widget.amount}&docid=${widget.docid}&patientid=${widget.patientid}&status=${widget.status}',
           onWebViewCreated: (WebViewController controller) {
             _controller.complete(controller);
           },

@@ -129,7 +129,10 @@ class _BookingScreenState extends State<BookingScreen> {
                     contact: userdata['contact'],
                     address: userdata['address'],
                     docid: widget.docid,
-                  )));
+                patientid: FirebaseAuth.instance.currentUser!.uid,
+                  status: 'pending'
+
+              )));
         }
 
         print("web");

@@ -5,16 +5,10 @@
 // ignore_for_file: public_member_api_docs
 
 import 'dart:async';
-import 'dart:html';
-import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:outlook/checkout/order_completion_status.dart';
-import 'package:outlook/screens/editdoc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
-import 'dart:js' as js;
 
 
 
@@ -24,13 +18,16 @@ import 'dart:js' as js;
 
 class WebViewExample extends StatefulWidget {
   String? selectedTime;
-  var date, instanceUser, name, docid,amount;
+  var date, instanceUser, docName, userName,contact,address, docid,amount;
   WebViewExample(
       {Key? key,
       this.selectedTime,
       this.date,
       this.instanceUser,
-      this.name,
+      this.docName,
+        this.userName,
+        this.contact,
+        this.address,
       this.docid,
       this.amount
       })
@@ -58,8 +55,9 @@ class WebViewExampleState extends State<WebViewExample> {
       //     _SampleMenu(_controller.future),
       //   ],
       // ),
+      //illmobile.tk/str
       body: WebView(
-          initialUrl: 'http://localhost/str/index.php?price=${widget.amount}&doctor=${widget.name}',
+          initialUrl: 'http://localhost/str/index.php?userName=${widget.userName}&contact=${widget.contact}&address=${widget.address}&docName=${widget.docName}&date=${widget.date}&datetime=${widget.selectedTime}&price=${widget.amount}',
           onWebViewCreated: (WebViewController controller) {
             _controller.complete(controller);
           },
@@ -97,7 +95,7 @@ class WebViewExampleState extends State<WebViewExample> {
             //       .collection("appointments")
             //       .doc()
             //       .set({
-            //     "docname": widget.name,
+            //     "docname": widget.docName,
             //     "docid": widget.docid,
             //     "patientid": widget.instanceUser,
             //     "time": widget.selectedTime,
@@ -122,70 +120,31 @@ class WebViewExampleState extends State<WebViewExample> {
             //
             // }
           }),
-      floatingActionButton:  FloatingActionButton(
-        onPressed: ()  {
-          setState(() {
-            print(js.context['location']['href']);
-            js.context.callMethod("alert", [js.context['location']['href']]);
-          });
-          // var url = window.location.href;
-          // print(" sdfaf $url");
-          // Scaffold.of(context).showSnackBar(
-          //   SnackBar(
-          //       content: Text(
-          //         'Current url is: $url',
-          //         style: TextStyle(fontSize: 20),
-          //       )),
-          // );
-          },
-    child: Icon(Icons.link),
-    ),
+    //   floatingActionButton:  FloatingActionButton(
+    //     onPressed: ()  {
+    //       setState(() {
+    //         print(js.context['location']['href']);
+    //         js.context.callMethod("alert", [js.context['location']['href']]);
+    //       });
+    //       // var url = window.location.href;
+    //       // print(" sdfaf $url");
+    //       // Scaffold.of(context).showSnackBar(
+    //       //   SnackBar(
+    //       //       content: Text(
+    //       //         'Current url is: $url',
+    //       //         style: TextStyle(fontSize: 20),
+    //       //       )),
+    //       // );
+    //       },
+    // child: Icon(Icons.link),
+    // ),
     );
   }
 }
 
-enum _MenuOptions {
-  doPostRequest,
-}
 
-class _SampleMenu extends StatelessWidget {
-  const _SampleMenu(this.controller);
 
-  final Future<WebViewController> controller;
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<WebViewController>(
-      future: controller,
-      builder:
-          (BuildContext context, AsyncSnapshot<WebViewController> controller) {
-        return PopupMenuButton<_MenuOptions>(
-          onSelected: (_MenuOptions value) {
-            switch (value) {
-              case _MenuOptions.doPostRequest:
-                _onDoPostRequest(controller.data!, context);
-                break;
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuItem<_MenuOptions>>[
-            const PopupMenuItem<_MenuOptions>(
-              value: _MenuOptions.doPostRequest,
-              child: Text('Post Request'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
-  Future<void> _onDoPostRequest(
-      WebViewController controller, BuildContext context) async {
-    final WebViewRequest request = WebViewRequest(
-      uri: Uri.parse('https://httpbin.org/post'),
-      method: WebViewRequestMethod.post,
-      headers: <String, String>{'foo': 'bar', 'Content-Type': 'text/plain'},
-      body: Uint8List.fromList('Test Body'.codeUnits),
-    );
-    await controller.loadRequest(request);
-  }
-}
+
+

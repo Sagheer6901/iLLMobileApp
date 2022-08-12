@@ -80,9 +80,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                   userdata = value;
                 });
               });
-              while (userdata == null && docdata == null) {
-                return Center(child: CircularProgressIndicator());
-              }
+
               return InkWell(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -107,7 +105,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                           Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(
                         children: [
-                          Text('\$ 50'),
+                          Text('\$${data['cost']}.00'),
                           Text(
                             'Status: ${data['status']}',
                             style: TextStyle(color: Colors.red),
@@ -125,6 +123,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                                 documentId: document.id,
                                 page: 'upcoming',
                                 role: widget.role,
+                                userdata: userdata,
                               )));
                 },
               );

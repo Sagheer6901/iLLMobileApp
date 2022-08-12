@@ -107,7 +107,7 @@ class _Washing_MachineState extends State<AppointmentHistory> {
                           Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(
                         children: [
-                          Text('\$ 349'),
+                          Text('\$ ${data['cost']}.00'),
                           Text(
                             'Status: ${data['status']}',
                             style: TextStyle(color: Colors.red),
@@ -125,6 +125,7 @@ class _Washing_MachineState extends State<AppointmentHistory> {
                                 documentId: document.id,
                                 page: '',
                                 role: widget.role,
+                                userdata: userdata,
                               )));
                 },
               );

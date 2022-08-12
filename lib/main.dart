@@ -6,7 +6,7 @@ import 'package:outlook/screens/Welcome/home.dart';
 import 'package:outlook/screens/auth/navscreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_web/webview_flutter_web.dart';
+// import 'package:webview_flutter_web/webview_flutter_web.dart';
 import 'firebase_options.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
@@ -35,7 +35,7 @@ void main() async {
             ? HomePage()
             : NavScreen(email: email, role: role),
   ));
-  WebView.platform = WebWebViewPlatform();
+  // WebView.platform = WebWebViewPlatform();
 
   // runApp(const MaterialApp(home: WebViewExample()));
 }

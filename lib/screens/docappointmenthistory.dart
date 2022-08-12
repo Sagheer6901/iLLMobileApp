@@ -119,7 +119,7 @@ class _Washing_MachineState extends State<DocAppointmentHistory> {
                           builder: (context) => AppointmentDetails(
                                 documentId: document.id,
                                 page: 'upcoming',
-                                role: widget.role,
+                                role: widget.role, userdata: data,
                               )));
                 },
               );

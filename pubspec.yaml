@@ -40,8 +40,8 @@ dependencies:
   geolocator: ^9.0.1
   permission_handler: ^10.0.0
   day_night_time_picker:
-  webview_flutter_web: ^0.1.0+4
-
+#  webview_flutter_web: ^0.1.0+4
+  bloc: ^8.1.0
 
 dev_dependencies:
   flutter_test:

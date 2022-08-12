@@ -13,11 +13,13 @@ class AppointmentDetails extends StatefulWidget {
   final String documentId;
   final role;
   final page;
+  var userdata;
   AppointmentDetails(
       {Key? key,
       required this.documentId,
       required this.page,
-      required this.role})
+      required this.role,
+      required this.userdata})
       : super(key: key);
 
   @override
@@ -141,19 +143,30 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // ListTile(
-                                //   leading: Icon(Icons.phone),
-                                //   title: Text("${data['userContact']}"),
-                                // ),
+                                ListTile(
+                                  leading: Icon(Icons.person),
+                                  title: Text(
+                                      "Patient Name: ${widget.userdata['username']}"),
+                                ),
+                                Divider(color: Colors.grey[500]),
                                 ListTile(
                                   leading: Icon(Icons.description),
                                   title: Text(
                                       "Date: ${data['date']} at ${data['time']}"),
                                 ),
-                                Divider(color: Colors.grey[500]),
+                                // ListTile(
+                                //   leading: Icon(Icons.attach_money),
+                                //   title: Text("Cost: \$${data['cost']}.00"),
+                                // ),
                                 ListTile(
-                                  leading: Icon(Icons.euro),
-                                  title: Text("\$50"),
+                                  leading: Icon(Icons.streetview),
+                                  title: Text(
+                                      "Patient Address: ${data['address']}"),
+                                ),
+                                ListTile(
+                                  leading: Icon(Icons.phone),
+                                  title:
+                                      Text("Phone number: ${data['contact']}"),
                                 ),
                               ],
                             ),

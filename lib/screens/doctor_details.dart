@@ -29,6 +29,7 @@ DateTime? to;
 DateTime? from;
 List<String> finaltime = [];
 Position? currentLocation;
+var userdata;
 
 class _BookingScreenState extends State<BookingScreen> {
   @override
@@ -36,6 +37,11 @@ class _BookingScreenState extends State<BookingScreen> {
     Geolocator.getCurrentPosition().then((value) {
       setState(() {
         currentLocation = value;
+      });
+    });
+    getUserData().then((value) {
+      setState(() {
+        userdata = value;
       });
     });
     // TODO: implement initState
@@ -89,7 +95,7 @@ class _BookingScreenState extends State<BookingScreen> {
   var schedule;
   var amount;
 
-  Future<void> makePayment() async {
+  Future<void> makePayment(String cost) async {
     try {
       paymentIntentData = await Get.put(ButtonController())
           .createPaymentIntent('50', 'USD'); //json.decode(response.body);
@@ -99,13 +105,29 @@ class _BookingScreenState extends State<BookingScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Please select available day')));
         } else {
+
+          //  FirebaseFirestore.instance.collection("appointments").doc().set({
+          //   "docname": widget.data['name'],
+          //   "docid": widget.docid,
+          //   "patientid": FirebaseAuth.instance.currentUser!.uid,
+          //   "time": selectedTime,
+          //   "date": date,
+          //   "contact": userdata['contact'],
+          //   "address": userdata['address'],
+          //   "cost": cost,
+          //   "status": 'pending'
+          // });
+
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => WebViewExample(
                 amount: amount,
                     selectedTime: selectedTime,
                     date: date,
                     instanceUser: FirebaseAuth.instance.currentUser!.uid,
-                    name: widget.data['name'],
+                    docName: widget.data['name'],
+                    userName: userdata['username'],
+                    contact: userdata['contact'],
+                    address: userdata['address'],
                     docid: widget.docid,
                   )));
         }
@@ -347,82 +369,90 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        determinePosition().then((_) {
-                          int charge1 = 0;
-                          int charge2 = 0;
-                          DateTime date = DateFormat.jm().parse(selectedTime!);
-                          print(date);
-                          double cost = 349;
-                          double drivetime = 0;
-                          calculateCost().then((value) {
-                            print(value);
-                            if (date.hour > 22 && date.hour < 1) {
-                              setState(() {
-                                charge2 = 25;
-                                cost = cost + 25;
-                                amount=cost;
+                        if(date!=""){
+                          determinePosition().then((_) {
+                            int charge1 = 0;
+                            int charge2 = 0;
+                            DateTime date = DateFormat.jm().parse(selectedTime!);
+                            print(date);
+                            double cost = 349;
+                            double drivetime = 0;
+                            calculateCost().then((value) {
+                              print(value);
+                              if (date.hour > 22 && date.hour < 1) {
+                                setState(() {
+                                  charge2 = 25;
+                                  cost = cost + 25;
+                                  amount=cost;
 
-                              });
-                            } else if (date.hour > 1 && date.hour < 8) {
-                              setState(() {
-                                charge2 = 100;
-                                cost = cost + 100;
-                                amount=cost;
+                                });
+                              } else if (date.hour > 1 && date.hour < 8) {
+                                setState(() {
+                                  charge2 = 100;
+                                  cost = cost + 100;
+                                  amount=cost;
 
+                                });
+                              }
+                              setState(() {
+                                drivetime = (value / 0.58);
                               });
-                            }
-                            setState(() {
-                              drivetime = (value / 0.58);
+                              if (drivetime > 16 && drivetime < 30) {
+                                setState(() {
+                                  charge1 = 50;
+                                  cost = cost + 50;
+                                  amount=cost;
+
+                                });
+                              } else if (drivetime > 30 && drivetime < 60) {
+                                setState(() {
+                                  charge1 = 100;
+                                  cost = cost + 100;
+                                  amount=cost;
+
+                                });
+                              } else if (drivetime > 60 && drivetime < 90) {
+                                setState(() {
+                                  charge1 = 200;
+                                  cost = cost + 200;
+                                  amount=cost;
+
+                                });
+                              }
+                              else if (drivetime > 90){
+                                setState(() {
+                                  charge1 = 200;
+                                  cost = cost + 200;
+                                  amount=cost;
+                                  // stripeLink= "https://buy.stripe.com/bIY7vY8Uo3P1dxK288";
+                                });
+                                showDialog(
+                                    context: (context),
+                                    builder: (context) => showDetails(
+                                        cost.toString(),
+                                        charge1.toString(),
+                                        charge2.toString()));
+                              }
+                              // drivetime > 90
+                              //     ? ScaffoldMessenger.of(context).showSnackBar(
+                              //         SnackBar(
+                              //             content: Text(
+                              //                 'Service Currently not available in your area')))
+                              //     : showDialog(
+                              //         context: (context),
+                              //         builder: (context) => showDetails(
+                              //             cost.toString(),
+                              //             charge1.toString(),
+                              //             charge2.toString()));
                             });
-                            if (drivetime > 16 && drivetime < 30) {
-                              setState(() {
-                                charge1 = 50;
-                                cost = cost + 50;
-                                amount=cost;
-
-                              });
-                            } else if (drivetime > 30 && drivetime < 60) {
-                              setState(() {
-                                charge1 = 100;
-                                cost = cost + 100;
-                                amount=cost;
-
-                              });
-                            } else if (drivetime > 60 && drivetime < 90) {
-                              setState(() {
-                                charge1 = 200;
-                                cost = cost + 200;
-                                amount=cost;
-
-                              });
-                            }
-                            else if (drivetime > 90){
-                              setState(() {
-                                charge1 = 200;
-                                cost = cost + 200;
-                                amount=cost;
-                                // stripeLink= "https://buy.stripe.com/bIY7vY8Uo3P1dxK288";
-                              });
-                              showDialog(
-                                  context: (context),
-                                  builder: (context) => showDetails(
-                                      cost.toString(),
-                                      charge1.toString(),
-                                      charge2.toString()));
-                            }
-                            // drivetime > 90
-                            //     ? ScaffoldMessenger.of(context).showSnackBar(
-                            //         SnackBar(
-                            //             content: Text(
-                            //                 'Service Currently not available in your area')))
-                            //     : showDialog(
-                            //         context: (context),
-                            //         builder: (context) => showDetails(
-                            //             cost.toString(),
-                            //             charge1.toString(),
-                            //             charge2.toString()));
                           });
-                        });
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      'Please select appointment date first')));
+                        }
                       },
                       child: Container(
                         width: double.infinity,
@@ -534,11 +564,17 @@ class _BookingScreenState extends State<BookingScreen> {
               child: Text('Cancel')),
           TextButton(
               onPressed: () async {
-                await makePayment();
+                await makePayment(cost);
               },
               child: Text('Ok'))
         ],
       ),
     );
+  }
+  Future getUserData() async {
+    return await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
   }
 }

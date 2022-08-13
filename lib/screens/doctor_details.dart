@@ -106,17 +106,6 @@ class _BookingScreenState extends State<BookingScreen> {
               SnackBar(content: Text('Please select available day')));
         } else {
 
-          //  FirebaseFirestore.instance.collection("appointments").doc().set({
-          //   "docname": widget.data['name'],
-          //   "docid": widget.docid,
-          //   "patientid": FirebaseAuth.instance.currentUser!.uid,
-          //   "time": selectedTime,
-          //   "date": date,
-          //   "contact": userdata['contact'],
-          //   "address": userdata['address'],
-          //   "cost": cost,
-          //   "status": 'pending'
-          // });
 
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => WebViewExample(
@@ -255,7 +244,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   children: [
-                    Text(widget.data['days'].replaceAll(',', ' ')),
+                    // Text(widget.data['days'].replaceAll(',', ' ')),
                     Container(
                       height: 350.0,
                       decoration: BoxDecoration(

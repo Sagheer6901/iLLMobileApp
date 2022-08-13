@@ -16,10 +16,10 @@ class AppointmentDetails extends StatefulWidget {
   var userdata;
   AppointmentDetails(
       {Key? key,
-      required this.documentId,
-      required this.page,
-      required this.role,
-      required this.userdata})
+        required this.documentId,
+        required this.page,
+        required this.role,
+        required this.userdata})
       : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
   Widget build(BuildContext context) {
     // CollectionReference for worker drwaer single data
     CollectionReference users =
-        FirebaseFirestore.instance.collection('appointments');
+    FirebaseFirestore.instance.collection('appointments');
     size = MediaQuery.of(context).size;
     height = size.height;
     width = size.width;
@@ -79,7 +79,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                     }
                     if (snapshot.connectionState == ConnectionState.done) {
                       Map<String, dynamic> data =
-                          snapshot.data!.data() as Map<String, dynamic>;
+                      snapshot.data!.data() as Map<String, dynamic>;
                       return ListView(
                         shrinkWrap: true,
                         children: [
@@ -102,7 +102,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                                 Center(
                                   child: Image(
                                     image:
-                                        AssetImage("assets/images/logo1.png"),
+                                    AssetImage("assets/images/logo1.png"),
                                     height: 80,
                                   ),
                                 ),
@@ -146,7 +146,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                                 ListTile(
                                   leading: Icon(Icons.person),
                                   title: Text(
-                                      "Patient Name: ${widget.userdata['username']}"),
+                                      "Patient Name: ${widget.userdata['patientName']}"),
                                 ),
                                 Divider(color: Colors.grey[500]),
                                 ListTile(
@@ -166,7 +166,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                                 ListTile(
                                   leading: Icon(Icons.phone),
                                   title:
-                                      Text("Phone number: ${data['contact']}"),
+                                  Text("Phone number: ${data['contact']}"),
                                 ),
                               ],
                             ),
@@ -174,121 +174,121 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                           const SizedBox(height: 5),
                           widget.page == 'upcoming'
                               ? Row(
-                                  mainAxisAlignment: widget.role == 'user'
-                                      ? MainAxisAlignment.center
-                                      : MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.5),
-                                              spreadRadius: 3,
-                                              blurRadius: 10,
-                                              offset: Offset(2, 2),
-                                            )
-                                          ]),
-                                      child: MaterialButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        color: Colors.purple[500],
-                                        height: 45,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          "Back",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 3),
-                                        ),
-                                      ),
-                                    ),
-                                    widget.role == 'user'
-                                        ? SizedBox(
-                                            width: width * 0.1,
-                                          )
-                                        : SizedBox(),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.5),
-                                              spreadRadius: 3,
-                                              blurRadius: 10,
-                                              offset: Offset(2, 2),
-                                            )
-                                          ]),
-                                      child: MaterialButton(
-                                        onPressed: () {
-                                          _showMyDialog();
-                                        },
-                                        color: Colors.red,
-                                        height: 45,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          "Cancel",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 3),
-                                        ),
-                                      ),
-                                    ),
-                                    widget.role == 'user'
-                                        ? SizedBox()
-                                        : Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.5),
-                                                    spreadRadius: 3,
-                                                    blurRadius: 10,
-                                                    offset: Offset(2, 2),
-                                                  )
-                                                ]),
-                                            child: MaterialButton(
-                                              onPressed: () {
-                                                _showCompleteDialog();
-                                              },
-                                              color: Colors.green,
-                                              height: 45,
-                                              elevation: 0,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                "Mark Complete",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w700,
-                                                    letterSpacing: 3),
-                                              ),
-                                            ),
-                                          ),
-                                  ],
-                                )
+                            mainAxisAlignment: widget.role == 'user'
+                                ? MainAxisAlignment.center
+                                : MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                        Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 3,
+                                        blurRadius: 10,
+                                        offset: Offset(2, 2),
+                                      )
+                                    ]),
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  color: Colors.purple[500],
+                                  height: 45,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    "Back",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 3),
+                                  ),
+                                ),
+                              ),
+                              widget.role == 'user'
+                                  ? SizedBox(
+                                width: width * 0.1,
+                              )
+                                  : SizedBox(),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                        Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 3,
+                                        blurRadius: 10,
+                                        offset: Offset(2, 2),
+                                      )
+                                    ]),
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    _showMyDialog();
+                                  },
+                                  color: Colors.red,
+                                  height: 45,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 3),
+                                  ),
+                                ),
+                              ),
+                              widget.role == 'user'
+                                  ? SizedBox()
+                                  : Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey
+                                            .withOpacity(0.5),
+                                        spreadRadius: 3,
+                                        blurRadius: 10,
+                                        offset: Offset(2, 2),
+                                      )
+                                    ]),
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    _showCompleteDialog();
+                                  },
+                                  color: Colors.green,
+                                  height: 45,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    "Mark Complete",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        letterSpacing: 3),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
                               : SizedBox(),
                         ],
                       );

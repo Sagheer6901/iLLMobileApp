@@ -13,15 +13,12 @@ class AppointmentHistory extends StatefulWidget {
   _Washing_MachineState createState() => _Washing_MachineState();
 }
 
-var docdata;
-var userdata;
-
 class _Washing_MachineState extends State<AppointmentHistory> {
   var size, height, width;
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
       .collection('appointments')
       .where('status', isEqualTo: 'Completed')
-      .where('patientid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where('patientId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots();
 
   final Stream<QuerySnapshot> _adminStream = FirebaseFirestore.instance
@@ -68,27 +65,14 @@ class _Washing_MachineState extends State<AppointmentHistory> {
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
+              document.data()! as Map<String, dynamic>;
 
-              getDocData(data['docid']).then((value) {
-                setState(() {
-                  docdata = value;
-                });
-              });
-              getUserData(data['patientid']).then((value) {
-                setState(() {
-                  userdata = value;
-                });
-              });
-              while (userdata == null && docdata == null) {
-                return Center(child: CircularProgressIndicator());
-              }
               return InkWell(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                     margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     // height: 120,
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
@@ -102,9 +86,9 @@ class _Washing_MachineState extends State<AppointmentHistory> {
                         Icons.check_circle_outline_outlined,
                       ),
                       title: Text(
-                          'Doctor: ${data['docname']} (Booked by: ${userdata['username']})'),
+                          'Doctor: ${data['docname']} (Booked by: ${data['patientName']})'),
                       subtitle:
-                          Text('Date: ${data['date']} at ${data['time']}'),
+                      Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(
                         children: [
                           Text('\$ ${data['cost']}.00'),
@@ -122,11 +106,11 @@ class _Washing_MachineState extends State<AppointmentHistory> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => AppointmentDetails(
-                                documentId: document.id,
-                                page: '',
-                                role: widget.role,
-                                userdata: userdata,
-                              )));
+                            documentId: document.id,
+                            page: '',
+                            role: widget.role,
+                            userdata: data,
+                          )));
                 },
               );
             }).toList(),
@@ -134,16 +118,5 @@ class _Washing_MachineState extends State<AppointmentHistory> {
         },
       ),
     );
-  }
-
-  Future getDocData(String docid) async {
-    return await FirebaseFirestore.instance
-        .collection('doctor')
-        .doc(docid)
-        .get();
-  }
-
-  Future getUserData(String uid) async {
-    return await FirebaseFirestore.instance.collection('user').doc(uid).get();
   }
 }

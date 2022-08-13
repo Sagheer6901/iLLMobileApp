@@ -21,7 +21,7 @@ class _Washing_MachineState extends State<CancelledAppointments> {
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
       .collection('appointments')
       .where('status', isEqualTo: 'Cancelled')
-      .where('patientid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+      .where('patientId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
       .snapshots();
 
   final Stream<QuerySnapshot> _adminStream = FirebaseFirestore.instance
@@ -68,14 +68,14 @@ class _Washing_MachineState extends State<CancelledAppointments> {
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
-                  document.data()! as Map<String, dynamic>;
+              document.data()! as Map<String, dynamic>;
 
               getDocData(data['docid']).then((value) {
                 setState(() {
                   docdata = value;
                 });
               });
-              getUserData(data['patientid']).then((value) {
+              getUserData(data['patientId']).then((value) {
                 setState(() {
                   userdata = value;
                 });
@@ -88,7 +88,7 @@ class _Washing_MachineState extends State<CancelledAppointments> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                     margin:
-                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     // height: 120,
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
@@ -104,7 +104,7 @@ class _Washing_MachineState extends State<CancelledAppointments> {
                       title: Text(
                           'Doctor: ${data['docname']} (Booked by: ${userdata['username']})'),
                       subtitle:
-                          Text('Date: ${data['date']} at ${data['time']}'),
+                      Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(
                         children: [
                           Text('\$ ${data['cost']}.00'),
@@ -122,11 +122,11 @@ class _Washing_MachineState extends State<CancelledAppointments> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => AppointmentDetails(
-                                documentId: document.id,
-                                page: 'cancelled',
-                                role: widget.role,
-                                userdata: userdata,
-                              )));
+                            documentId: document.id,
+                            page: 'cancelled',
+                            role: widget.role,
+                            userdata: userdata,
+                          )));
                 },
               );
             }).toList(),

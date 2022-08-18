@@ -57,7 +57,7 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     // setState(() {
     //   twilioFlutter =
-    //       TwilioFlutter(accountSid: 'ACb990e23fabc9e5d0546c63662d9820d1', authToken: '1e30f3c373408fdfebc9cbe150854816', twilioNumber: '+18444235752');
+    //       TwilioFlutter(accountSid: '', authToken: '', twilioNumber: '');
     // });
     Geolocator.getCurrentPosition().then((value) {
       setState(() {
@@ -209,7 +209,7 @@ class _BookingScreenState extends State<BookingScreen> {
           backgroundColor: Colors.black12,
         ));
         // twilioFlutter!.sendSMS(
-        //     toNumber: '+15615288089',
+        //     toNumber: '',
         //     messageBody:
         //     'Appointment has been booked by ${userdata['username']}\nPhone number: ${userdata['contact']}\nAddress: ${userdata['address']}\nDoctor Name: ${widget.data['name']}\nAppointment Date: $date\nAppointment Time: $selectedTime');
         paymentIntentData = null;

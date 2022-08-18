@@ -62,7 +62,7 @@ class WebViewExampleState extends State<WebViewExample> {
         // ],
       ),
       body: WebView(
-          initialUrl: 'https://illmobile.tk/str/index.php?userName=${widget.userName}&contact=${widget.contact}&address=${widget.address}&docName=${widget.docName}&date=${widget.date}&datetime=${widget.selectedTime}&price=${widget.amount}&docid=${widget.docid}&patientid=${widget.patientid}&status=${widget.status}',
+          initialUrl: 'url?userName=${widget.userName}&contact=${widget.contact}&address=${widget.address}&docName=${widget.docName}&date=${widget.date}&datetime=${widget.selectedTime}&price=${widget.amount}&docid=${widget.docid}&patientid=${widget.patientid}&status=${widget.status}',
           // initialUrl: "https://illmobile.tk/str/index.php?price=${widget.amount}&docName=${widget.docName}&userName=${widget.userName}",
           // https://amzexpert.org/str/?userName=sagheer&contact=351635132&address=dfjshksm&docName=sardoc&date=2/5/22&datetime=5:22&price=35102&docid=65313&patientid=5631&status=pending
           onWebViewCreated: (WebViewController controller) {

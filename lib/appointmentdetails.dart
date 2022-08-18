@@ -44,6 +44,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
         backgroundColor: kPrimaryColor,
         leading: IconButton(
           onPressed: () {
+            Navigator.of(context).pop();
             // Navigator.push(context,
             //     MaterialPageRoute(builder: (context) => orderDetails()));
           },
@@ -146,7 +147,7 @@ class _OrderDetailsState extends State<AppointmentDetails> {
                                 ListTile(
                                   leading: Icon(Icons.person),
                                   title: Text(
-                                      "Patient Name: ${widget.userdata['patientName']}"),
+                                      "Patient Name: ${data['patientName']}"),
                                 ),
                                 Divider(color: Colors.grey[500]),
                                 ListTile(

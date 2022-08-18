@@ -118,7 +118,7 @@ class _EmailCardState extends State<EmailCard> {
                   color: kPrimaryColor,
                   child: Center(
                     child: Text(
-                      'Book appointment',
+                      widget.role == 'user'?'Book appointment':'Show Details',
                       style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   ),

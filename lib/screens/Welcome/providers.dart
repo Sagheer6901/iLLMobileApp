@@ -83,7 +83,7 @@ class Providers extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Auren Weinberg, MD, MBA is the founder and owner of IMK4K.',
+                              'Auren Weinberg, MD, MBA is the founder and owner of ILLMobile.',
                               style: TextStyle(
                                   fontSize: Responsive.isDesktop(context)
                                       ? 24

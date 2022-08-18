@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:outlook/controller/buttoncontroller.dart';
 import 'package:outlook/controller/datecontroller.dart';
 import 'package:intl/intl.dart';
+import 'package:outlook/screens/Welcome/components/cost.dart';
 import 'package:outlook/screens/web_checkout.dart';
 import '../components/booking_details.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,26 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../constants.dart';
 import '../controller/datepickercontroller.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-
 import 'main/main_screen.dart';
+
+
+
+
+
+
+// drivetime > 90
+//     ? ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//         content: Text(
+//             'Service Currently not available in your area')))
+//     : showDialog(
+//     context: (context),
+//     builder: (context) => showDetails(
+//         cost.toString(),
+//         charge1.toString(),
+//         charge2.toString()));
+
+
 
 class BookingScreen extends StatefulWidget {
   final data;
@@ -30,15 +49,22 @@ DateTime? from;
 List<String> finaltime = [];
 Position? currentLocation;
 var userdata;
+bool is_loading = false;
 
 class _BookingScreenState extends State<BookingScreen> {
+  // TwilioFlutter? twilioFlutter;
   @override
   void initState() {
+    // setState(() {
+    //   twilioFlutter =
+    //       TwilioFlutter(accountSid: 'ACb990e23fabc9e5d0546c63662d9820d1', authToken: '1e30f3c373408fdfebc9cbe150854816', twilioNumber: '+18444235752');
+    // });
     Geolocator.getCurrentPosition().then((value) {
       setState(() {
         currentLocation = value;
       });
     });
+
     getUserData().then((value) {
       setState(() {
         userdata = value;
@@ -77,13 +103,13 @@ class _BookingScreenState extends State<BookingScreen> {
       time = time.add(Duration(hours: 1));
       print('time $time');
       DateTime tempDate =
-          DateFormat("hh:mm").parse('${time.hour}:${time.minute}');
+      DateFormat("hh:mm").parse('${time.hour}:${time.minute}');
       var dateFormat = DateFormat("h:mm a");
       String datee = dateFormat.format(tempDate);
       finaltime.add(datee);
     }
     setState(() {
-      selectedTime = finaltime[0];
+      selectedTime = 'Select';
     });
     print(finaltime);
   }
@@ -94,31 +120,29 @@ class _BookingScreenState extends State<BookingScreen> {
   String date = "";
   var schedule;
   var amount;
-
+  DateTime? date_unformated;
   Future<void> makePayment(String cost) async {
     try {
       paymentIntentData = await Get.put(ButtonController())
-          .createPaymentIntent('50', 'USD'); //json.decode(response.body);
+          .createPaymentIntent(cost, 'USD'); //json.decode(response.body);
       // print('Response body==>${response.body.toString()}');
       if (kIsWeb) {
         if (flag == false) {
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Please select available day')));
         } else {
-
-
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => WebViewExample(
-                amount: amount,
-                    selectedTime: selectedTime,
-                    date: date,
-                    instanceUser: FirebaseAuth.instance.currentUser!.uid,
-                    docName: widget.data['name'],
-                    userName: userdata['username'],
-                    contact: userdata['contact'],
-                    address: userdata['address'],
-                    docid: widget.docid,
-                patientid: FirebaseAuth.instance.currentUser!.uid,
+                  amount: cost,
+                  selectedTime: selectedTime,
+                  date: date,
+                  instanceUser: FirebaseAuth.instance.currentUser!.uid,
+                  docName: widget.data['name'],
+                  userName: userdata['username'],
+                  contact: userdata['contact'],
+                  address: userdata['address'],
+                  docid: widget.docid,
+                  patientid: FirebaseAuth.instance.currentUser!.uid,
                   status: 'pending'
 
               )));
@@ -132,18 +156,15 @@ class _BookingScreenState extends State<BookingScreen> {
         } else {
           await Stripe.instance
               .initPaymentSheet(
-                  paymentSheetParameters: SetupPaymentSheetParameters(
-                      paymentIntentClientSecret:
-                          paymentIntentData!['client_secret'],
-                      style: ThemeMode.light,
-                      merchantDisplayName: 'Sagheer Ahmed'))
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret:
+                  paymentIntentData!['client_secret'],
+                  style: ThemeMode.light,
+                  merchantDisplayName: widget.data['name']))
               .then((value) {});
-          displayPaymentSheet();
+          displayPaymentSheet(cost);
         }
       }
-
-      ///now finally display payment sheeet
-
     } catch (e, s) {
       print('exception:$e$s');
     }
@@ -151,14 +172,14 @@ class _BookingScreenState extends State<BookingScreen> {
 
   displayWeb(BuildContext context) {}
 
-  displayPaymentSheet() async {
+  displayPaymentSheet(String cost) async {
     try {
       await Stripe.instance
           .presentPaymentSheet(
-              parameters: PresentPaymentSheetParameters(
-        clientSecret: paymentIntentData!['client_secret'],
-        confirmPayment: true,
-      ))
+          parameters: PresentPaymentSheetParameters(
+            clientSecret: paymentIntentData!['client_secret'],
+            confirmPayment: true,
+          ))
           .then((newValue) async {
         print('payment intent' + paymentIntentData!['id'].toString());
         print(
@@ -169,10 +190,14 @@ class _BookingScreenState extends State<BookingScreen> {
         await FirebaseFirestore.instance.collection("appointments").doc().set({
           "docname": widget.data['name'],
           "docid": widget.docid,
-          "patientid": FirebaseAuth.instance.currentUser!.uid,
+          "patientName": userdata['username'],
+          "patientId": FirebaseAuth.instance.currentUser!.uid,
           "time": selectedTime,
           "date": date,
-          "status": 'pending'
+          "status": 'pending',
+          "cost": cost,
+          "address": userdata['address'],
+          "contact": userdata['contact']
         }).then((_) {
           Navigator.pop(context);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -183,7 +208,10 @@ class _BookingScreenState extends State<BookingScreen> {
           content: Text("paid successfully"),
           backgroundColor: Colors.black12,
         ));
-
+        // twilioFlutter!.sendSMS(
+        //     toNumber: '+15615288089',
+        //     messageBody:
+        //     'Appointment has been booked by ${userdata['username']}\nPhone number: ${userdata['contact']}\nAddress: ${userdata['address']}\nDoctor Name: ${widget.data['name']}\nAppointment Date: $date\nAppointment Time: $selectedTime');
         paymentIntentData = null;
       }).onError((error, stackTrace) {
         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
@@ -193,8 +221,8 @@ class _BookingScreenState extends State<BookingScreen> {
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
-                content: Text("Cancelled "),
-              ));
+            content: Text("Cancelled "),
+          ));
     } catch (e) {
       print('$e');
     }
@@ -234,9 +262,9 @@ class _BookingScreenState extends State<BookingScreen> {
           stream: FirebaseFirestore.instance
               .collection('appointments')
               .where(
-                'status',
-                isEqualTo: 'pending',
-              )
+            'status',
+            isEqualTo: 'pending',
+          )
               .snapshots(),
           builder: (context, snapshot) {
             return SingleChildScrollView(
@@ -259,7 +287,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               selectionColor: (_.booking().color),
                               enablePastDates: false,
                               minDate: DateTime(DateTime.now().year,
-                                  DateTime.now().month, DateTime.now().day + 1),
+                                  DateTime.now().month, DateTime.now().day),
                               headerStyle: DateRangePickerHeaderStyle(
                                   backgroundColor: kPrimaryColor,
                                   textAlign: TextAlign.center,
@@ -267,16 +295,17 @@ class _BookingScreenState extends State<BookingScreen> {
                               onSelectionChanged: (value) async {
                                 String day = widget.data['days'];
                                 DateFormat formatter =
-                                    DateFormat.yMMMMEEEEd('en_US');
+                                DateFormat.yMMMMEEEEd('en_US');
                                 setState(() {
+                                  date_unformated = value.value;
                                   date = formatter.format(value.value);
                                   for (var i = 0;
-                                      i < snapshot.data!.docs.length;
-                                      i++) {
+                                  i < snapshot.data!.docs.length;
+                                  i++) {
                                     if (snapshot.data!.docs[i]['date'] ==
                                         date) {
                                       finaltime.removeWhere((element) =>
-                                          element ==
+                                      element ==
                                           snapshot.data!.docs[i]['time']);
                                     }
                                     if (finaltime.contains(
@@ -290,8 +319,8 @@ class _BookingScreenState extends State<BookingScreen> {
                                   }
                                 });
                                 for (var i = 0;
-                                    i < day.split(',').length;
-                                    i++) {
+                                i < day.split(',').length;
+                                i++) {
                                   if (day.split(',')[i] ==
                                       date.split(',')[0].substring(0, 3)) {
                                     print('found');
@@ -334,16 +363,16 @@ class _BookingScreenState extends State<BookingScreen> {
                             hint: selectedTime == null
                                 ? Text(finaltime[0])
                                 : Text(
-                                    selectedTime!,
-                                    style: TextStyle(
-                                      color: kTextColor,
-                                    ),
-                                  ),
+                              selectedTime!,
+                              style: TextStyle(
+                                color: kTextColor,
+                              ),
+                            ),
                             iconSize: 30.0,
                             style:
-                                TextStyle(color: kPrimaryColor, fontSize: 16),
+                            TextStyle(color: kPrimaryColor, fontSize: 16),
                             items: finaltime.map(
-                              (val) {
+                                  (val) {
                                 return DropdownMenuItem<String>(
                                   value: val,
                                   child: Text(val),
@@ -352,7 +381,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             ).toList(),
                             onChanged: (val) {
                               setState(
-                                () {
+                                    () {
                                   selectedTime = val!;
                                 },
                               );
@@ -361,89 +390,42 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        if(date!=""){
-                          determinePosition().then((_) {
-                            int charge1 = 0;
-                            int charge2 = 0;
-                            DateTime date = DateFormat.jm().parse(selectedTime!);
-                            print(date);
-                            double cost = 349;
-                            double drivetime = 0;
-                            calculateCost().then((value) {
-                              print(value);
-                              if (date.hour > 22 && date.hour < 1) {
-                                setState(() {
-                                  charge2 = 25;
-                                  cost = cost + 25;
-                                  amount=cost;
+                        setState(() {
+                          is_loading = true;
+                        });
 
-                                });
-                              } else if (date.hour > 1 && date.hour < 8) {
-                                setState(() {
-                                  charge2 = 100;
-                                  cost = cost + 100;
-                                  amount=cost;
+                        if (date != "" && selectedTime != 'Select') {
+                          stopcircular();
+                          String time = selectedTime!.split(' ')[0];
+                          int unformat_time = int.parse(time.split(':')[0]);
 
-                                });
-                              }
-                              setState(() {
-                                drivetime = (value / 0.58);
-                              });
-                              if (drivetime > 16 && drivetime < 30) {
-                                setState(() {
-                                  charge1 = 50;
-                                  cost = cost + 50;
-                                  amount=cost;
-
-                                });
-                              } else if (drivetime > 30 && drivetime < 60) {
-                                setState(() {
-                                  charge1 = 100;
-                                  cost = cost + 100;
-                                  amount=cost;
-
-                                });
-                              } else if (drivetime > 60 && drivetime < 90) {
-                                setState(() {
-                                  charge1 = 200;
-                                  cost = cost + 200;
-                                  amount=cost;
-
-                                });
-                              }
-                              else if (drivetime > 90){
-                                setState(() {
-                                  charge1 = 200;
-                                  cost = cost + 200;
-                                  amount=cost;
-                                  // stripeLink= "https://buy.stripe.com/bIY7vY8Uo3P1dxK288";
-                                });
-                                showDialog(
-                                    context: (context),
-                                    builder: (context) => showDetails(
-                                        cost.toString(),
-                                        charge1.toString(),
-                                        charge2.toString()));
-                              }
-                              // drivetime > 90
-                              //     ? ScaffoldMessenger.of(context).showSnackBar(
-                              //         SnackBar(
-                              //             content: Text(
-                              //                 'Service Currently not available in your area')))
-                              //     : showDialog(
-                              //         context: (context),
-                              //         builder: (context) => showDetails(
-                              //             cost.toString(),
-                              //             charge1.toString(),
-                              //             charge2.toString()));
+                          if (selectedTime!.split(' ')[1] == 'PM') {
+                            unformat_time = unformat_time + 11;
+                          } else if (selectedTime!.split(' ')[1] == 'AM' &&
+                              time.split(':')[0] == '12') {
+                            unformat_time = 0;
+                          }
+                          int nowHour =
+                          int.parse((DateTime.now().hour).toString());
+                          if (date_unformated!.day == DateTime.now().day &&
+                              nowHour >= unformat_time) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text('Please Select Correct time')));
+                            stopcircular();
+                          } else {
+                            determinePosition().then((_) {
+                              calculateCost();
                             });
-                          });
-                        }
-                        else{
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      'Please select appointment date first')));
+                          }
+                        } else {
+
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(
+                                  'Please select appointment date and time first')));
+                        stopcircular();
+                        setState(() {
+
+                        });
                         }
                       },
                       child: Container(
@@ -462,7 +444,9 @@ class _BookingScreenState extends State<BookingScreen> {
                           ],
                         ),
                         child: Center(
-                          child: Text(
+                          child: is_loading == true
+                              ? CircularProgressIndicator()
+                              : Text(
                             'Confirm Booking',
                             style: TextStyle(
                               color: Colors.white,
@@ -483,6 +467,10 @@ class _BookingScreenState extends State<BookingScreen> {
   bool dateflag = false;
   Future calculateCost() async {
     double distInKm = 0;
+    DateTime date = DateFormat.jm().parse(selectedTime!);
+    print(date);
+    int cost = 349;
+    // double drivetime = 60;
     await FirebaseFirestore.instance
         .collection('admin')
         .doc('SQfPgIfFDGMujE3rtkPyLvIPdFo1')
@@ -497,10 +485,73 @@ class _BookingScreenState extends State<BookingScreen> {
       distInKm = distInMeters / 1000;
       print(distInKm);
     });
+
+    double drivetime = distInKm / 0.58;
+    setState(() {
+      is_loading = false;
+    });
+    // print(value);
+    if (date.hour >= 22 && date.hour < 1) {
+      setState(() {
+        cost = cost + 25;
+        amount = cost;
+      });
+    } else if (date.hour >= 1 && date.hour < 8) {
+      setState(() {
+        cost = cost + 100;
+        amount = cost;
+      });
+    }
+    // setState(() {
+    //   drivetime = (value / 0.58);
+    // });
+    print('drivetime: $drivetime');
+    if (drivetime >= 16 && drivetime < 30) {
+      setState(() {
+        cost = cost + 50;
+        amount = cost;
+      });
+    } else if (drivetime >= 30 && drivetime < 60) {
+      setState(() {
+        cost = cost + 100;
+        amount = cost;
+      });
+    } else if (drivetime >= 60 && drivetime < 90) {
+      setState(() {
+        cost = cost + 200;
+        amount = cost;
+      });
+    }
+    else if (drivetime > 90){
+      setState(() {
+        cost = cost + 200;
+        amount=cost;
+// stripeLink= "https://buy.stripe.com/bIY7vY8Uo3P1dxK288";
+      });
+      showDialog(
+          context: (context),
+          builder: (context) => showDetails(
+              cost.toString(),
+             ));
+    }
+    print('drivetime $drivetime');
+    // drivetime > 90
+    //     ? ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //     content: Text('Service Currently not available in your area')))
+    //     : showDialog(
+    //     context: (context),
+    //     builder: (context) => showDetails(cost.toString()));
+
     return distInKm;
   }
 
-  Widget showDetails(String cost, String charges1, String charges2) {
+  stopcircular() {
+    setState(() {
+      is_loading = false;
+    });
+  }
+
+  Widget showDetails(String cost) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.5,
       child: AlertDialog(
@@ -563,6 +614,7 @@ class _BookingScreenState extends State<BookingScreen> {
       ),
     );
   }
+
   Future getUserData() async {
     return await FirebaseFirestore.instance
         .collection('user')

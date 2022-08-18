@@ -102,7 +102,7 @@ class _Washing_MachineState extends State<CancelledAppointments> {
                         Icons.cancel_outlined,
                       ),
                       title: Text(
-                          'Doctor: ${data['docname']} (Booked by: ${userdata['username']})'),
+                          'Doctor: ${data['docname']} (Booked by: ${data['patientName']})'),
                       subtitle:
                       Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(

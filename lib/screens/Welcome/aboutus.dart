@@ -108,7 +108,7 @@ class AboutUs extends StatelessWidget {
                                             : 20),
                                 textAlign: TextAlign.left),
                             Text(
-                                'We serve patients from West Palm Beach to Miami, including Delray Beach, Boca Raton, Ft. Lauderdale,and Hollywood.',
+                                'We serve patients from West Palm Beach to Miami, including Delray Beach, Boca Raton, \nFt. Lauderdale,and Hollywood.',
                                 style: TextStyle(
                                     fontSize: Responsive.isDesktop(context)
                                         ? 24

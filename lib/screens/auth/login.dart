@@ -47,7 +47,7 @@ class _SignUpState extends State<Login> {
           content: Text("Email Is Empty"),
         ),
       );
-    } else if (!regExp.hasMatch(email.text)) {
+    } else if (!regExp.hasMatch(email.text.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Email Is Not Vaild"),
@@ -218,18 +218,18 @@ class _SignUpState extends State<Login> {
       });
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(
-              email: email.text, password: password.text)
+              email: email.text.trim(), password: password.text)
           .whenComplete(() {
         setState(() {
           isloading = false;
         });
       }).then((value) async {
         SharedPreferences preferences = await SharedPreferences.getInstance();
-        preferences.setString('email', email.text);
+        preferences.setString('email', email.text.trim());
         preferences.setString('role', widget.role);
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) =>
-                NavScreen(email: email.text, role: widget.role)));
+                NavScreen(email: email.text.trim(), role: widget.role)));
       });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

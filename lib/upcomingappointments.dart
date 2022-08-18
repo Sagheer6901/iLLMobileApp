@@ -68,7 +68,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
-              document.data()! as Map<String, dynamic>;
+                  document.data()! as Map<String, dynamic>;
 
               // getDocData(data['docid']).then((value) {
               //   setState(() {
@@ -86,7 +86,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                   padding: const EdgeInsets.all(10.0),
                   child: Container(
                     margin:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     // height: 120,
                     decoration: BoxDecoration(color: Colors.white, boxShadow: [
                       BoxShadow(
@@ -102,7 +102,7 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                       title: Text(
                           'Doctor: ${data['docname']} (Booked by: ${data['patientName']})'),
                       subtitle:
-                      Text('Date: ${data['date']} at ${data['time']}'),
+                          Text('Date: ${data['date']} at ${data['time']}'),
                       trailing: Column(
                         children: [
                           Text('\$${data['cost']}.00'),
@@ -120,11 +120,11 @@ class _Washing_MachineState extends State<UpcomingAppointments> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => AppointmentDetails(
-                            documentId: document.id,
-                            page: 'upcoming',
-                            role: widget.role,
-                            userdata: data,
-                          )));
+                                documentId: document.id,
+                                page: 'upcoming',
+                                role: widget.role,
+                                userdata: data,
+                              )));
                 },
               );
             }).toList(),

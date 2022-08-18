@@ -129,7 +129,7 @@ class _AddDoctorState extends State<AddDoctor> {
                           color: kTitleTextColor,
                         ),
                         focusColor: kPrimaryColor,
-                        hintText: 'Contact',
+                        hintText: 'Experience',
                       ),
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[

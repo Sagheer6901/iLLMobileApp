@@ -58,7 +58,7 @@ class _SignUpState extends State<SignUp> {
           content: Text("Email Is Empty"),
         ),
       );
-    } else if (!regExp.hasMatch(email.text)) {
+    } else if (!regExp.hasMatch(email.text.trim())) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Email Is Not Vaild"),
@@ -249,7 +249,7 @@ class _SignUpState extends State<SignUp> {
                             ? database
                                 .postAdminDetailsToFirestore(
                                     localimage!,
-                                    email.text,
+                                    email.text.trim(),
                                     password.text,
                                     username.text,
                                     address.text,
@@ -278,7 +278,7 @@ class _SignUpState extends State<SignUp> {
                             : database
                                 .postUserDetailsToFirestore(
                                     localimage,
-                                    email.text,
+                                    email.text.trim(),
                                     password.text,
                                     username.text,
                                     address.text,
